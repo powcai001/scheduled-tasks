@@ -1,6 +1,6 @@
-# Scheduled Tasks
+# 📨 PushPlus 定时推送通知
 
-这是一个专门用于 GitHub Actions 定时任务的项目。
+基于 GitHub Actions 的定时任务，通过 [PushPlus](https://www.pushplus.plus/) 自动推送消息到微信。
 
 ## 项目结构
 
@@ -8,21 +8,43 @@
 scheduled-tasks/
 ├── .github/
 │   └── workflows/
-│       ├── daily-task.yml      # 每日任务示例
-│       └── cron-examples.yml   # 更多定时示例
-├── scripts/                    # 自定义脚本目录
-│   └── example.sh
+│       └── pushplus-notify.yml   # 定时推送工作流
+├── scripts/
+│   └── pushplus_notify.py        # PushPlus 推送脚本
 ├── README.md
 └── .gitignore
 ```
 
-## 定时任务列表
+## 快速开始
 
-| 任务名称 | 执行频率 | 说明 |
-|---------|---------|------|
-| Daily Task | 每天 UTC 02:00 (北京 10:00) | 示例每日任务 |
+### 1. 获取 PushPlus Token
 
-## Cron 表达式速查
+1. 访问 [pushplus.plus](https://www.pushplus.plus/)，微信扫码登录
+2. 复制页面上显示的 **Token**
+
+### 2. 配置 GitHub Secrets
+
+1. 进入仓库 → `Settings` → `Secrets and variables` → `Actions`
+2. 点击 `New repository secret`
+3. Name: `PUSHPLUS_TOKEN`，Value: 你的 token
+
+### 3. 完成
+
+推送代码后，工作流会按设定的时间自动发送通知到你的微信。
+
+## 定时规则
+
+默认每天**北京时间 08:00** 发送通知，可在 `pushplus-notify.yml` 中修改：
+
+```yaml
+on:
+  schedule:
+    - cron: '0 0 * * *'    # 每天北京 08:00（UTC 00:00）
+    # - cron: '0 12 * * *'  # 每天北京 20:00（UTC 12:00）
+    # - cron: '0 1 * * 1'   # 每周一北京 09:00（UTC 01:00）
+```
+
+### Cron 表达式速查
 
 ```
 ┌───────────── 分钟 (0 - 59)
@@ -34,34 +56,26 @@ scheduled-tasks/
 * * * * *
 ```
 
-### 常用示例
+| Cron 表达式 | 北京时间 |
+|------------|---------|
+| `0 0 * * *` | 每天 08:00 |
+| `0 12 * * *` | 每天 20:00 |
+| `30 1 * * 1-5` | 工作日 09:30 |
+| `0 1 * * 1` | 每周一 09:00 |
+| `0 0 1 * *` | 每月 1 号 08:00 |
 
-| Cron 表达式 | 含义 | 北京时间 |
-|------------|------|---------|
-| `0 0 * * *` | 每天 UTC 00:00 | 每天 08:00 |
-| `0 2 * * *` | 每天 UTC 02:00 | 每天 10:00 |
-| `0 16 * * *` | 每天 UTC 16:00 | 每天 00:00 |
-| `30 4 * * 1-5` | 工作日 UTC 04:30 | 工作日 12:30 |
-| `0 0 1 * *` | 每月 1 号 UTC 00:00 | 每月 1 号 08:00 |
-| `*/30 * * * *` | 每 30 分钟 | 每 30 分钟 |
+## 手动触发
+
+支持在 GitHub Actions 页面手动触发，可自定义标题、内容和模板类型（markdown / html / txt）。
+
+## 自定义通知内容
+
+编辑 `scripts/pushplus_notify.py` 中的 `build_daily_report()` 函数，修改推送的标题和正文内容。
 
 ## 注意事项
 
 1. **时区**：GitHub Actions 使用 UTC 时区，北京时间 = UTC + 8
-2. **最短间隔**：最短执行间隔为 5 分钟
+2. **最短间隔**：cron 最短执行间隔为 5 分钟
 3. **延迟**：高负载时可能有几分钟延迟
-4. **仓库活跃度**：60 天无活动可能导致定时任务被禁用
-
-## 手动触发
-
-所有 workflow 都支持手动触发：
-1. 进入 GitHub 仓库的 Actions 页面
-2. 选择要运行的 workflow
-3. 点击 "Run workflow" 按钮
-
-## 使用方法
-
-1. Fork 或克隆此仓库
-2. 根据需要修改 `.github/workflows/` 下的 YAML 文件
-3. 在 `scripts/` 目录添加自定义脚本
-4. 推送到 GitHub 即可生效
+4. **仓库活跃度**：60 天无活动可能导致定时任务被自动禁用
+5. **消息模板**：支持 `markdown`、`html`、`txt`、`json` 四种格式

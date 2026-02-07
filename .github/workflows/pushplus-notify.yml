@@ -1,0 +1,70 @@
+name: PushPlus 定时通知
+
+on:
+  schedule:
+    # ===== 按需修改定时规则 =====
+    # 每天北京时间 08:00（UTC 00:00）发送早间通知
+    - cron: '0 0 * * *'
+    
+    # 每天北京时间 20:00（UTC 12:00）发送晚间通知
+    # - cron: '0 12 * * *'
+    
+    # 每周一北京时间 09:00（UTC 01:00）发送周报提醒
+    # - cron: '0 1 * * 1'
+
+  # 允许手动触发（方便测试）
+  workflow_dispatch:
+    inputs:
+      title:
+        description: '通知标题（留空则使用默认每日报告）'
+        required: false
+        default: ''
+      content:
+        description: '通知内容（留空则使用默认每日报告）'
+        required: false
+        default: ''
+      template:
+        description: '消息模板类型'
+        required: false
+        default: 'markdown'
+        type: choice
+        options:
+          - markdown
+          - html
+          - txt
+          - json
+
+jobs:
+  send-notification:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Send PushPlus notification
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          NOTIFY_TITLE: ${{ github.event.inputs.title }}
+          NOTIFY_CONTENT: ${{ github.event.inputs.content }}
+          NOTIFY_TEMPLATE: ${{ github.event.inputs.template || 'markdown' }}
+        run: python scripts/pushplus_notify.py
+      
+      - name: Summary
+        if: always()
+        run: |
+          echo "### 📨 PushPlus 通知任务" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **执行时间**: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S') (北京时间)" >> $GITHUB_STEP_SUMMARY
+          echo "- **触发方式**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "- **自定义标题**: ${{ github.event.inputs.title || '(默认每日报告)' }}" >> $GITHUB_STEP_SUMMARY
+          fi

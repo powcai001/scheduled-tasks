@@ -34,7 +34,8 @@
     "taskItems": [
       "机复习"
     ],
-    "status": "pending",
-    "createdAt": "2026-02-10T03:16:18.616Z"
+    "status": "sent",
+    "createdAt": "2026-02-10T03:16:18.616Z",
+    "sentAt": "2026-02-10T13:14:29.597095+08:00"
   }
 ]

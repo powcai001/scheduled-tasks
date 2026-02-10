@@ -8,7 +8,8 @@
     "taskItems": [
       "随机复习"
     ],
-    "status": "pending",
-    "createdAt": "2026-02-10T05:24:31.585Z"
+    "status": "sent",
+    "createdAt": "2026-02-10T05:24:31.585Z",
+    "sentAt": "2026-02-10T13:34:43.702405+08:00"
   }
 ]

@@ -3,10 +3,10 @@
     "id": "r_1770692297540_3oq792",
     "startTime": "2026-02-10 10:59",
     "title": "test-1059",
-    "content": ":59 ææäº",
+    "content": ":59 Ã¦ÂÂÃ¦ÂÂÃ¤ÂºÂ",
     "notifyType": "wechat",
     "taskItems": [
-      ":59 ææäº"
+      ":59 Ã¦ÂÂÃ¦ÂÂÃ¤ÂºÂ"
     ],
     "status": "pending",
     "createdAt": "2026-02-10T02:58:17.540Z"
@@ -14,13 +14,25 @@
   {
     "id": "r_1770692377093_ufl2ep",
     "startTime": "2026-02-10 11:09",
-    "title": ":59 星期二",
-    "content": ":59 星期二",
+    "title": ":59 ææäº",
+    "content": ":59 ææäº",
     "notifyType": "wechat",
     "taskItems": [
-      ":59 星期二"
+      ":59 ææäº"
     ],
     "status": "pending",
     "createdAt": "2026-02-10T02:59:37.093Z"
+  },
+  {
+    "id": "r_1770693378616_26v78q",
+    "startTime": "2026-02-10 11:26",
+    "title": "机复习",
+    "content": "机复习",
+    "notifyType": "wechat",
+    "taskItems": [
+      "机复习"
+    ],
+    "status": "pending",
+    "createdAt": "2026-02-10T03:16:18.616Z"
   }
 ]
